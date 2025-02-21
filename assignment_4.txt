@@ -1,0 +1,79 @@
+4.(Exercise on the group by and order by clauses) Create Sales table with the following fields (Sales No, Salesname, Branch, Salesamount, DOB)
+ 1.Create a Sales Table with the following fields (Sales_No,Sales_Name,Branch,Sales_Amount,DOB)
+ 2.Insert five records
+ 3.Calculate total salesamount in each branch
+ 4.Calculate average salesamount in each branch
+ 5.Display all the salesmen, DOB who are born in the month of December as day in character format i.e. 21-Dec-09
+ 6.Display the name and DOB of salesman in alphabetical order of the month.
+
+
+
+mysql> -- 1. Create the 'Sales' table
+mysql> CREATE TABLE Sales (
+    ->     Sales_No INT PRIMARY KEY,
+    ->     Sales_Name VARCHAR(100),
+    ->     Branch VARCHAR(50),
+    ->     Sales_Amount DECIMAL(10,2),
+    ->     DOB DATE
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> -- 2. Insert five records into the 'Sales' table
+mysql> INSERT INTO Sales (Sales_No, Sales_Name, Branch, Sales_Amount, DOB) VALUES
+    ->     (1, 'Ram Bahadur Thapa', 'Kathmandu', 50000.00, '1990-12-15'),
+    ->     (2, 'Sita Kumari Joshi', 'Pokhara', 62000.00, '1985-06-10'),
+    ->     (3, 'Krishna Prasad Koirala', 'Lalitpur', 45000.00, '1992-12-21'),
+    ->     (4, 'Bishnu Maya Rai', 'Biratnagar', 70000.00, '1993-09-05'),
+    ->     (5, 'Gopal Bahadur Sharma', 'Kathmandu', 55000.00, '1988-03-18');
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> 
+mysql> -- 3. Calculate total sales amount in each branch
+mysql> SELECT Branch, SUM(Sales_Amount) AS Total_Sales FROM Sales GROUP BY Branch;
++------------+-------------+
+| Branch     | Total_Sales |
++------------+-------------+
+| Kathmandu  |   105000.00 |
+| Pokhara    |    62000.00 |
+| Lalitpur   |    45000.00 |
+| Biratnagar |    70000.00 |
++------------+-------------+
+4 rows in set (0.00 sec)
+
+mysql> -- 4. Calculate average sales amount in each branch
+mysql> SELECT Branch, AVG(Sales_Amount) AS Average_Sales FROM Sales GROUP BY Branch;
++------------+---------------+
+| Branch     | Average_Sales |
++------------+---------------+
+| Kathmandu  |  52500.000000 |
+| Pokhara    |  62000.000000 |
+| Lalitpur   |  45000.000000 |
+| Biratnagar |  70000.000000 |
++------------+---------------+
+4 rows in set (0.00 sec)
+
+mysql> 
+mysql> -- 5. Display all salesmen and DOB who are born in December in 'DD-MMM-YY' format
+mysql> SELECT Sales_Name, DATE_FORMAT(DOB, '%d-%b-%y') AS DOB FROM Sales WHERE MONTH(DOB) = 12;
++------------------------+-----------+
+| Sales_Name             | DOB       |
++------------------------+-----------+
+| Ram Bahadur Thapa      | 15-Dec-90 |
+| Krishna Prasad Koirala | 21-Dec-92 |
++------------------------+-----------+
+2 rows in set (0.01 sec)
+
+mysql> -- 6. Display name and DOB of salesmen in alphabetical order of the birth month
+mysql> SELECT Sales_Name, DATE_FORMAT(DOB, '%d-%b-%y') AS DOB FROM Sales ORDER BY MONTH(DOB);
++------------------------+-----------+
+| Sales_Name             | DOB       |
++------------------------+-----------+
+| Gopal Bahadur Sharma   | 18-Mar-88 |
+| Sita Kumari Joshi      | 10-Jun-85 |
+| Bishnu Maya Rai        | 05-Sep-93 |
+| Ram Bahadur Thapa      | 15-Dec-90 |
+| Krishna Prasad Koirala | 21-Dec-92 |
++------------------------+-----------+
+5 rows in set (0.00 sec)
+
